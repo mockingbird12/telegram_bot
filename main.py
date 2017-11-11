@@ -1,6 +1,8 @@
 import telebot
 import conversations
 import anecdots
+import random
+import time
 
 
 TOKEN = '411297683:AAGDRvzu9FCD0sviGuyA8GvdF5o2PGEJ660'
@@ -13,12 +15,17 @@ def start(message):
     # bot.register_next_step_handler(sent, hello)
 
 
-@bot.message_handler(commands=['joke'])
-def new_joke(message):
-    bot.send_message(message.chat.id, anecdots.get_new_joke())
-
+@bot.message_handler(regexp='шутк')
 def hello(message):
-    bot.send_message(message.chat.id, 'Привет, %s!' % message.text)
+    bot.send_message(message.chat.id, conversations.conv_bogdan('intro'))
+    bot.send_chat_action(message.chat.id, 'typing')
+    time.sleep(2)
+    bot.send_message(message.chat.id, anecdots.get_new_joke())
+    bot.send_chat_action(message.chat.id, 'typing')
+    time.sleep(4)
+    pictures = ['badumts1.jpeg', 'badumts2.jpeg', 'badumts3.jpeg']
+    msg = bot.send_photo(message.chat.id, open('images/' + pictures[random.randint(0, len(pictures))], 'rb'), None)
+    # bot.send_message(message.chat.id, msg.photo[1].file_id, reply_to_message_id=msg.message_id)
 
 
 if __name__ == "__main__":
